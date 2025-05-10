@@ -22,6 +22,7 @@ common:
   podSecurityContext:
     fsGroup: 1000
   podDisruptionBudget:
+    name: "user-service-pdb"
     minAvailable: 1
   podAntiAffinity:
     type: preferred
@@ -125,6 +126,7 @@ ingress:
 # Resource Quotas
 resourceQuota:
   enabled: true
+  name: "user-service-quota"
   hard:
     requests.cpu: "2"
     requests.memory: 2Gi
