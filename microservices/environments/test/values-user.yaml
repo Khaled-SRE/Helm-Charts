@@ -105,15 +105,15 @@ ingress:
   enabled: true
   className: "alb"
   annotations:
-    scheme: internet-facing
-    targetType: instance
-    healthcheckPath: /users/
-    healthcheckProtocol: HTTP
-    successCodes: '200'
-    healthyThresholdCount: '2'
-    unhealthyThresholdCount: '2'
-    groupName: platform-test-eks
-    groupOrder: '1'
+    scheme: "internet-facing"
+    targetType: "instance"
+    healthcheckPath: "/users/"
+    healthcheckProtocol: "HTTP"
+    successCodes: "200"
+    healthyThresholdCount: "2"
+    unhealthyThresholdCount: "2"
+    groupName: "platform-test-eks"
+    groupOrder: "1"
     certificateArn: "arn:aws:acm:eu-west-1:767397883134:certificate/c8fdbfe8-a678-4055-8e4e-a48183f105af"
   hosts:
     - host: microservices.platform-online.shop
