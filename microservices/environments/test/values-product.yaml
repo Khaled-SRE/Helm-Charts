@@ -1,6 +1,12 @@
 # Product Service Configuration
 nameOverride: "product-service"
 
+# ServiceAccount Configuration
+serviceAccount:
+  enabled: true
+  name: product-service-sa
+  annotations: {}
+
 # Deployment Configuration
 deployment:
   enabled: true
