@@ -1,0 +1,16 @@
+{{- if .Values.common.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: microservices-network-policy
+  labels:
+    {{- include "microservices.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: microservices
+  policyTypes:
+    - Ingress
+  ingress:
+    {{- toYaml .Values.common.networkPolicy.ingressRules | nindent 4 }}
+{{- end }} 

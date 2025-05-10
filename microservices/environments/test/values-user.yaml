@@ -1,0 +1,137 @@
+# Global settings
+image:
+  registry: 767397883134.dkr.ecr.eu-west-1.amazonaws.com
+  name: microservices-user
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Common settings
+common:
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  podSecurityContext:
+    fsGroup: 1000
+  podDisruptionBudget:
+    minAvailable: 1
+  podAntiAffinity:
+    type: preferred
+    weight: 100
+  topologySpreadConstraints:
+    maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+  networkPolicy:
+    enabled: true
+    ingressRules:
+      - from:
+          - podSelector:
+              matchLabels:
+                app.kubernetes.io/name: product-service
+        ports:
+          - protocol: TCP
+            port: 5002
+  horizontalPodAutoscaler:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "5002"
+  podLabels:
+    app.kubernetes.io/part-of: microservices
+    app.kubernetes.io/managed-by: helm
+
+# User Service configuration
+userService:
+  enabled: true
+  port: 5002
+  service:
+    type: ClusterIP
+    port: 80
+  resources:
+    limits:
+      cpu: 300m
+      memory: 256Mi
+    requests:
+      cpu: 150m
+      memory: 128Mi
+  image:
+    repository: microservices-user
+    tag: latest
+  config:
+    env: []
+    envFrom: []
+  livenessProbe:
+    httpGet:
+      path: /users/
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /users/
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  startupProbe:
+    httpGet:
+      path: /users/
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    scheme: internet-facing
+    targetType: instance
+    healthcheckPath: /users/
+    healthcheckProtocol: HTTP
+    successCodes: '200'
+    healthyThresholdCount: '2'
+    unhealthyThresholdCount: '2'
+    groupName: platform-test-eks
+    groupOrder: '1'
+    certificateArn: "arn:aws:acm:eu-west-1:767397883134:certificate/c8fdbfe8-a678-4055-8e4e-a48183f105af"  
+  hosts:
+    - host: microservices.platform-online.shop
+      paths:
+        - path: /users
+          pathType: Prefix
+          service: user-service
+          port: 80
+
+# Resource Quotas
+resourceQuota:
+  enabled: true
+  hard:
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "4"
+    limits.memory: 4Gi
+    pods: "10" 

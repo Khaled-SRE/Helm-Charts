@@ -1,0 +1,40 @@
+{{- if .Values.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservices-ingress
+  labels:
+    {{- include "microservices.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.annotations.scheme | default "internet-facing" }}
+    alb.ingress.kubernetes.io/target-type: {{ .Values.ingress.annotations.targetType | default "instance" }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/healthcheck-path: {{ .Values.ingress.annotations.healthcheckPath | default "/health" }}
+    alb.ingress.kubernetes.io/healthcheck-protocol: {{ .Values.ingress.annotations.healthcheckProtocol | default "HTTP" }}
+    alb.ingress.kubernetes.io/success-codes: {{ .Values.ingress.annotations.successCodes | default "'200'" }}
+    alb.ingress.kubernetes.io/healthy-threshold-count: {{ .Values.ingress.annotations.healthyThresholdCount | default "'2'" }}
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: {{ .Values.ingress.annotations.unhealthyThresholdCount | default "'2'" }}
+    alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.annotations.groupName | default "microservices" }}
+    alb.ingress.kubernetes.io/group.order: {{ .Values.ingress.annotations.groupOrder | default "'1'" }}
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/actions.ssl-redirect.type: redirect
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.annotations.certificateArn | default "" }}
+spec:
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ .service }}
+                port:
+                  number: {{ .port }}
+          {{- end }}
+    {{- end }}
+{{- end }} 

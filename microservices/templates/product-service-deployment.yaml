@@ -1,0 +1,87 @@
+{{- if and .Values.productService (hasKey .Values.productService "enabled") (eq .Values.productService.enabled true) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  labels:
+    {{- include "microservices.labels" . | nindent 4 }}
+    app.kubernetes.io/name: product-service
+spec:
+  replicas: {{ .Values.common.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "microservices.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: product-service
+  template:
+    metadata:
+      labels:
+        {{- include "microservices.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: product-service
+      {{- with .Values.common.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.common.serviceAccount }}
+      serviceAccountName: {{ .name | default (include "microservices.serviceAccountName" $) }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.common.securityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-product
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          image: "{{ .Values.image.registry }}/{{ .Values.productService.image.repository }}:{{ .Values.productService.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.productService.port }}
+              protocol: TCP
+          env:
+            {{- with .Values.productService.config.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          envFrom:
+            {{- with .Values.productService.config.envFrom }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.productService.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.productService.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.productService.readinessProbe | nindent 12 }}
+          startupProbe:
+            {{- toYaml .Values.productService.startupProbe | nindent 12 }}
+      {{- with .Values.common.podAntiAffinity }}
+      affinity:
+        podAntiAffinity:
+          {{- if eq .type "preferred" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: {{ .weight }}
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "microservices.selectorLabels" $ | nindent 20 }}
+                topologyKey: kubernetes.io/hostname
+          {{- else }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  {{- include "microservices.selectorLabels" $ | nindent 16 }}
+              topologyKey: kubernetes.io/hostname
+          {{- end }}
+      {{- end }}
+      {{- with .Values.common.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        - maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "microservices.selectorLabels" $ | nindent 14 }}
+      {{- end }}
+{{- end }} 

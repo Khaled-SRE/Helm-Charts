@@ -1,0 +1,13 @@
+{{- if .Values.common.podDisruptionBudget }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: microservices-pdb
+  labels:
+    {{- include "microservices.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.common.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: microservices
+{{- end }} 
