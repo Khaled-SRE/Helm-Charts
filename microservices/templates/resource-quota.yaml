@@ -2,10 +2,25 @@
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: {{ .Values.resourceQuota.name | default "microservices-quota" }}
+  name: {{ .Values.resourceQuota.name | default (printf "%s-quota" (include "microservices.fullname" .)) }}
   labels:
     {{- include "microservices.labels" . | nindent 4 }}
+    {{- with .Values.resourceQuota.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.resourceQuota.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   hard:
     {{- toYaml .Values.resourceQuota.hard | nindent 4 }}
+  scopes:
+    {{- with .Values.resourceQuota.scopes }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  scopeSelector:
+    {{- with .Values.resourceQuota.scopeSelector }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 {{- end }} 

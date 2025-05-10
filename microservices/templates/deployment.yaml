@@ -1,83 +1,83 @@
-{{- if .Values.service.enabled }}
+{{- if .Values.deployment.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.service.name }}
+  name: {{ include "microservices.fullname" . }}-deployment
   labels:
     {{- include "microservices.labels" . | nindent 4 }}
+    {{- with .Values.deployment.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
-  replicas: {{ .Values.common.replicaCount }}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.deployment.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "microservices.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        {{- include "microservices.selectorLabels" . | nindent 8 }}
-      {{- with .Values.common.podAnnotations }}
+      {{- with .Values.deployment.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      labels:
+        {{- include "microservices.selectorLabels" . | nindent 8 }}
+        {{- with .Values.deployment.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-      {{- if .Values.common.serviceAccount.create }}
-      serviceAccountName: {{ .Values.common.serviceAccount.name | default (printf "%s-%s" .Release.Name .Chart.Name) }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "microservices.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.common.securityContext | nindent 8 }}
+        {{- toYaml .Values.deployment.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.deployment.securityContext | nindent 12 }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.deployment.service.port }}
               protocol: TCP
           livenessProbe:
-            {{- toYaml .Values.service.livenessProbe | nindent 12 }}
+            {{- toYaml .Values.deployment.livenessProbe | nindent 12 }}
           readinessProbe:
-            {{- toYaml .Values.service.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.deployment.readinessProbe | nindent 12 }}
           startupProbe:
-            {{- toYaml .Values.service.startupProbe | nindent 12 }}
+            {{- toYaml .Values.deployment.startupProbe | nindent 12 }}
           resources:
-            {{- toYaml .Values.service.resources | nindent 12 }}
-          {{- with .Values.service.config.env }}
+            {{- toYaml .Values.deployment.resources | nindent 12 }}
+          {{- with .Values.deployment.env }}
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.service.config.envFrom }}
+          {{- with .Values.deployment.envFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.common.podSecurityContext }}
-      securityContext:
+          {{- with .Values.deployment.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.deployment.volumes }}
+      volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.common.podAntiAffinity }}
-      affinity:
-        podAntiAffinity:
-          {{- if eq .type "preferred" }}
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: {{ .weight }}
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    {{- include "microservices.selectorLabels" . | nindent 20 }}
-                topologyKey: kubernetes.io/hostname
-          {{- else }}
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  {{- include "microservices.selectorLabels" . | nindent 16 }}
-              topologyKey: kubernetes.io/hostname
-          {{- end }}
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.common.topologySpreadConstraints }}
-      topologySpreadConstraints:
-        - maxSkew: {{ .maxSkew }}
-          topologyKey: {{ .topologyKey }}
-          whenUnsatisfiable: {{ .whenUnsatisfiable }}
-          labelSelector:
-            matchLabels:
-              {{- include "microservices.selectorLabels" . | nindent 14 }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
 {{- end }} 
