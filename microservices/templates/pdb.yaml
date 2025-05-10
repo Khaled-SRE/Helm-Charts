@@ -2,7 +2,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: microservices-pdb
+  name: {{ .Values.common.podDisruptionBudget.name | default "microservices-pdb" }}
   labels:
     {{- include "microservices.labels" . | nindent 4 }}
 spec:

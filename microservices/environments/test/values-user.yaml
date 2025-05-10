@@ -45,6 +45,7 @@ common:
         ports:
           - protocol: TCP
             port: 5002
+    name: "user-service-network-policy"
   horizontalPodAutoscaler:
     enabled: true
     minReplicas: 2
@@ -123,6 +124,7 @@ ingress:
           pathType: Prefix
           service: user-service
           port: 80
+  name: "user-service-ingress"
 # Resource Quotas
 resourceQuota:
   enabled: true

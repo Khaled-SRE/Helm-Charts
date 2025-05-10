@@ -45,6 +45,7 @@ common:
         ports:
           - protocol: TCP
             port: 5001
+    name: "product-service-network-policy"
   horizontalPodAutoscaler:
     enabled: true
     minReplicas: 2
@@ -104,6 +105,7 @@ productService:
 # Ingress configuration
 ingress:
   enabled: true
+  name: "product-service-ingress"
   className: "alb"
   annotations:
     scheme: internet-facing

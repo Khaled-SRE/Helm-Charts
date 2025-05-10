@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: microservices-quota
+  name: {{ .Values.resourceQuota.name | default "microservices-quota" }}
   labels:
     {{- include "microservices.labels" . | nindent 4 }}
 spec:
