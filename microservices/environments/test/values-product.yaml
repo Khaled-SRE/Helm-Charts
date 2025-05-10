@@ -6,7 +6,7 @@ deployment:
   enabled: true
   replicaCount: 1
   image:
-    repository: product-service
+    repository: 767397883134.dkr.ecr.eu-west-1.amazonaws.com/microservices-product
     tag: latest
     pullPolicy: IfNotPresent
   service:
