@@ -15,7 +15,23 @@ This Helm chart deploys a microservices architecture consisting of Product and U
 The chart deploys two main services:
 
 - **Product Service** (`:5001`): Handles product-related operations
+  - **Endpoints**:
+    - `GET /products`: Retrieve all products
+    - `GET /products/{id}`: Retrieve a specific product by ID
+    - `POST /products`: Create a new product
+    - `PUT /products/{id}`: Update an existing product
+    - `DELETE /products/{id}`: Delete a product
+  - **Functionality**: Manages product inventory, pricing, and metadata.
+
 - **User Service** (`:5002`): Manages user-related operations
+  - **Endpoints**:
+    - `GET /users`: Retrieve all users
+    - `GET /users/{id}`: Retrieve a specific user by ID
+    - `POST /users`: Create a new user
+    - `PUT /users/{id}`: Update an existing user
+    - `DELETE /users/{id}`: Delete a user
+  - **Functionality**: Handles user authentication, profile management, and permissions.
+
 
 ## 🔒 Security Features
 
