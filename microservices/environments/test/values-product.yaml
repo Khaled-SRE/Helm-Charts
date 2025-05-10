@@ -1,12 +1,10 @@
 # Product Service Configuration
 nameOverride: "product-service"
-
 # ServiceAccount Configuration
 serviceAccount:
   enabled: true
   name: product-service-sa
   annotations: {}
-
 # Deployment Configuration
 deployment:
   enabled: true
@@ -47,7 +45,6 @@ deployment:
       value: "5001"
     - name: NODE_ENV
       value: "test"
-
 # Service Configuration
 service:
   enabled: true
@@ -55,7 +52,6 @@ service:
   port: 5001
   targetPort: 5001
   annotations: {}
-
 # Autoscaling Configuration
 autoscaling:
   enabled: false
@@ -63,14 +59,12 @@ autoscaling:
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
-
 # Image Configuration
 image:
   registry: 767397883134.dkr.ecr.eu-west-1.amazonaws.com
   name: microservices-product
-  tag: 93247c4c92511f2da9eb3c7f85df1109434c5852
+  tag: 2055917018edd01ba16c1691d3d4c301c39c397c
   pullPolicy: IfNotPresent
-
 # Ingress Configuration
 ingress:
   enabled: true
@@ -101,7 +95,6 @@ ingress:
           pathType: Prefix
           service: product-service
           port: 80
-
 # NetworkPolicy Configuration
 networkPolicy:
   enabled: true
@@ -114,13 +107,11 @@ networkPolicy:
       ports:
         - protocol: TCP
           port: 5001
-
 # PodDisruptionBudget Configuration
 podDisruptionBudget:
   enabled: true
   name: "product-service-pdb"
   minAvailable: 1
-
 # ResourceQuota Configuration
 resourceQuota:
   enabled: true
