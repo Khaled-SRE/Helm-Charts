@@ -63,7 +63,7 @@ autoscaling:
 image:
   registry: 767397883134.dkr.ecr.eu-west-1.amazonaws.com
   name: microservices-user
-  tag: acaedac7972fea85a1104f36b221192f71979496
+  tag: fab805a30947badde568f124fd6532a2518f77a1
   pullPolicy: IfNotPresent
 # Ingress Configuration
 ingress:
