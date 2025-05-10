@@ -2,9 +2,8 @@
 image:
   registry: 767397883134.dkr.ecr.eu-west-1.amazonaws.com
   name: microservices-user
-  tag: latest
+  tag: 93247c4c92511f2da9eb3c7f85df1109434c5852
   pullPolicy: IfNotPresent
-
 # Common settings
 common:
   replicaCount: 2
@@ -57,7 +56,6 @@ common:
   podLabels:
     app.kubernetes.io/part-of: microservices
     app.kubernetes.io/managed-by: helm
-
 # User Service configuration
 userService:
   enabled: true
@@ -102,7 +100,6 @@ userService:
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 30
-
 # Ingress configuration
 ingress:
   enabled: true
@@ -117,7 +114,7 @@ ingress:
     unhealthyThresholdCount: '2'
     groupName: platform-test-eks
     groupOrder: '1'
-    certificateArn: "arn:aws:acm:eu-west-1:767397883134:certificate/c8fdbfe8-a678-4055-8e4e-a48183f105af"  
+    certificateArn: "arn:aws:acm:eu-west-1:767397883134:certificate/c8fdbfe8-a678-4055-8e4e-a48183f105af"
   hosts:
     - host: microservices.platform-online.shop
       paths:
@@ -125,7 +122,6 @@ ingress:
           pathType: Prefix
           service: user-service
           port: 80
-
 # Resource Quotas
 resourceQuota:
   enabled: true
@@ -134,4 +130,4 @@ resourceQuota:
     requests.memory: 2Gi
     limits.cpu: "4"
     limits.memory: 4Gi
-    pods: "10" 
+    pods: "10"
