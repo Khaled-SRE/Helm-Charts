@@ -41,11 +41,6 @@ deployment:
       value: "5001"
     - name: NODE_ENV
       value: "test"
-  envFrom:
-    - configMapRef:
-        name: product-service-config
-    - secretRef:
-        name: product-service-secrets
 
 # Service Configuration
 service:
@@ -53,12 +48,6 @@ service:
   type: ClusterIP
   port: 5001
   targetPort: 5001
-  annotations: {}
-
-# ServiceAccount Configuration
-serviceAccount:
-  create: true
-  name: product-service-sa
   annotations: {}
 
 # Autoscaling Configuration
