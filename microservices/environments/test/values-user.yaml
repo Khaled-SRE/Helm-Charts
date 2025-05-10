@@ -31,10 +31,7 @@ common:
     maxSkew: 1
     topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway
-  serviceAccount:
-    create: true
-    name: ""
-    annotations: {}
+
   networkPolicy:
     enabled: true
     ingressRules:
