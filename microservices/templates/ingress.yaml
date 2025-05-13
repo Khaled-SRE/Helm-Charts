@@ -4,6 +4,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Values.ingress.name | default (include "microservices.fullname" .) }}
+  {{- if .Values.ingress.namespace }}
+  namespace: {{ .Values.ingress.namespace }}
+  {{- end }}
   labels:
     {{- include "microservices.labels" . | nindent 4 }}
     {{- with .Values.ingress.labels }}
@@ -28,18 +31,18 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
+    {{- range .Values.ingress.rules }}
     - host: {{ .host | quote }}
       http:
         paths:
-          {{- range .paths }}
+          {{- range .http.paths }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ .service }}
+                name: {{ .backend.service.name }}
                 port:
-                  number: {{ .port }}
+                  number: {{ .backend.service.port.number }}
           {{- end }}
     {{- end }}
 {{- end }} 

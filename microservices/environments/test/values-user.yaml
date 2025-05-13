@@ -67,30 +67,32 @@ image:
   pullPolicy: IfNotPresent
 # Ingress Configuration
 ingress:
-  enabled: false
+  enabled: true
   name: "user-service-ingress"
+  namespace: "microservices"
   className: "alb"
   annotations:
-    "alb.ingress.kubernetes.io/scheme": "internet-facing"
-    "alb.ingress.kubernetes.io/target-type": "ip"
+    "alb.ingress.kubernetes.io/actions.ssl-redirect.type": "redirect"
+    "alb.ingress.kubernetes.io/certificate-arn": "arn:aws:acm:eu-west-1:767397883134:certificate/c8fdbfe8-a678-4055-8e4e-a48183f105af"
     "alb.ingress.kubernetes.io/group.name": "platform-test-eks"
-    "alb.ingress.kubernetes.io/certificate.arn": "arn:aws:acm:eu-west-1:767397883134:certificate/8e235418-d197-4490-a175-9c501d12db31"
-    "alb.ingress.kubernetes.io/subnets": "subnet-053e498fd0658cdc7,subnet-0dbae47b2c6ae837d,subnet-005d492791e368ed1"
+    "alb.ingress.kubernetes.io/healthcheck-protocol": "HTTP"
+    "alb.ingress.kubernetes.io/listen-ports": '[{"HTTP":80},{"HTTPS":443}]'
+    "alb.ingress.kubernetes.io/scheme": "internet-facing"
     "alb.ingress.kubernetes.io/security-groups": "sg-0624528efa18ffdda,sg-007a7c57f68e812fd"
-    "alb.ingress.kubernetes.io/listen-ports": '[{"HTTP": 80}, {"HTTPS": 443}]'
     "alb.ingress.kubernetes.io/ssl-redirect": "443"
-    "healthcheckPath": "/users/"
-    "healthcheckProtocol": "HTTP"
-    "successCodes": "200"
-    "healthyThresholdCount": "2"
-    "unhealthyThresholdCount": "2"
-  hosts:
+    "alb.ingress.kubernetes.io/subnets": "subnet-053e498fd0658cdc7,subnet-0dbae47b2c6ae837d,subnet-005d492791e368ed1"
+    "alb.ingress.kubernetes.io/target-type": "ip"
+  rules:
     - host: microservices.platform-online.shop
-      paths:
-        - path: /users
-          pathType: Prefix
-          service: user-service
-          port: 5002
+      http:
+        paths:
+          - path: /users
+            pathType: Prefix
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 5002
 # NetworkPolicy Configuration
 networkPolicy:
   enabled: true
