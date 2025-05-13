@@ -84,7 +84,7 @@ ingress:
     "alb.ingress.kubernetes.io/subnets": "subnet-053e498fd0658cdc7,subnet-0dbae47b2c6ae837d,subnet-005d492791e368ed1"
     "alb.ingress.kubernetes.io/security-groups": "sg-0624528efa18ffdda,sg-007a7c57f68e812fd"
     "alb.ingress.kubernetes.io/target-type": "instance"
-    "alb.ingress.kubernetes.io/listen-ports": '{"HTTP": 80}'
+    "alb.ingress.kubernetes.io/listen-ports": '[{"HTTP": 80}]'
     #"alb.ingress.kubernetes.io/listen-ports": '[{"HTTP": 80}, {"HTTPS": 443}]'
     #"alb.ingress.kubernetes.io/ssl-redirect": "443"
     #"alb.ingress.kubernetes.io/load-balancer-attributes": "routing.http.drop_invalid_header_fields.enabled=true"
