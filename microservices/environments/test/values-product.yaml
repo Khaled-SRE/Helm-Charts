@@ -48,7 +48,7 @@ deployment:
 # Service Configuration
 service:
   enabled: true
-  type: ClusterIP
+  type: NodePort
   port: 5001
   targetPort: 5001
   annotations: {}
@@ -94,7 +94,7 @@ ingress:
         - path: /products
           pathType: Prefix
           service: product-service
-          port: 80
+          port: 5001
 # NetworkPolicy Configuration
 networkPolicy:
   enabled: true
