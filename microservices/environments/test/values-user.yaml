@@ -67,7 +67,7 @@ image:
   pullPolicy: IfNotPresent
 # Ingress Configuration
 ingress:
-  enabled: true
+  enabled: false
   name: "user-service-ingress"
   namespace: "microservices"
   className: "alb"
