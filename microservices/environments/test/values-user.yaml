@@ -95,7 +95,7 @@ ingress:
         - path: /users
           pathType: Prefix
           service: user-service
-          port: 80
+          port: 5002
 # NetworkPolicy Configuration
 networkPolicy:
   enabled: true
