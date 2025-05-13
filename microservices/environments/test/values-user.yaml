@@ -48,7 +48,7 @@ deployment:
 # Service Configuration
 service:
   enabled: true
-  type: ClusterIP
+  type: NodePort
   port: 5002
   targetPort: 5002
   annotations: {}
