@@ -72,7 +72,7 @@ ingress:
   className: "alb"
   annotations:
     "scheme": "internet-facing"
-    "targetType": "instance"
+    "targetType": "ip"
     "healthcheckPath": "/users/"
     "healthcheckProtocol": "HTTP"
     "successCodes": "200"
