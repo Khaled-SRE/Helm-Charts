@@ -78,7 +78,7 @@ ingress:
     "unhealthyThresholdCount": "2"
     "alb.ingress.kubernetes.io/scheme": "internet-facing"
     "alb.ingress.kubernetes.io/group.name": "platform-test-eks"
-    "alb.ingress.kubernetes.io/certificate.arn": "arn:aws:acm:eu-west-1:767397883134:certificate/c8fdbfe8-a678-4055-8e4e-a48183f105af"
+    "alb.ingress.kubernetes.io/certificate.arn": "arn:aws:acm:eu-west-1:767397883134:certificate/8e235418-d197-4490-a175-9c501d12db31"
     "alb.ingress.kubernetes.io/subnets": "subnet-053e498fd0658cdc7,subnet-0dbae47b2c6ae837d,subnet-005d492791e368ed1"
     "alb.ingress.kubernetes.io/security-groups": "sg-0624528efa18ffdda,sg-007a7c57f68e812fd"
     "alb.ingress.kubernetes.io/target-type": "ip"
